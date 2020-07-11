@@ -35,6 +35,13 @@ rcon_pw = password
 ```
 "worlds" should contain a list of all [world:<xyz>] entries you have on that server and for which you want to add markers.  
 You can have multiple playermarker sections for different servers.
+* python dependencies
+```
+asyncio
+json5
+requests
+pillow
+```
 
 ## Usage
 
