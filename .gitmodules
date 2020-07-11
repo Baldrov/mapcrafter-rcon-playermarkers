@@ -1,0 +1,3 @@
+[submodule "async_mcrcon"]
+	path = async_mcrcon
+	url = https://github.com/MrReacher/async-mcrcon.git
