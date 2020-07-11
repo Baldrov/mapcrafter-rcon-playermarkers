@@ -21,8 +21,12 @@ async def player_markers(conf):
             load_skin(player, conf)
 
         maps = {}
-        for map in conf["servers"][server]["worlds"].strip("[]").split(", "):
-            maps[map] = conf["worlds"][map]
+        if "worlds" in conf["servers"][server]:
+            for map in conf["servers"][server]["worlds"].strip("[]").split(", "):
+                maps[map] = conf["worlds"][map]
+        # default to all worlds
+        else:
+            maps = conf["worlds"]
         update_markers(os.path.join(conf["output_dir"], "playermarkers.js"), players, maps)
 
 
@@ -53,7 +57,7 @@ def load_config(file):
                     if s_name not in conf["servers"]:
                         conf["servers"][s_name] = {}
                     conf["servers"][s_name][name.strip()] = value.strip()
-            if ":" in section and "world" in section:
+            if ":" in section and "world" in section.split(":")[0]:
                 if "=" in line:
                     s_name = section.split(":")[1]
                     name, value = line.split("=")
@@ -101,6 +105,9 @@ def update_markers(file, players, maps):
                     group["markers"][entry] = []
                 for map in maps:
                     if maps[map] == player[1]:
+                        # In case a new map got added in the meantime
+                        if map not in group["markers"]:
+                            group["markers"][map] = []
                         group["markers"][map].append({'pos': player[2], "title": player[0], "text": player[0]})
 
             else:

@@ -5,7 +5,7 @@ Goal was something like [Mapcrafter-playermarkers](https://github.com/mapcrafter
 
 Users will have their marker added when they are online.  
 Skins will be cached for one day.  
-Markers will stay if someone logs out but will be deactivated by default.  
+Markers will stay if someone logs out but will be deactivated by default (they get removed after 2 Weeks of inactivity).
 
 
 ## Setup
@@ -33,7 +33,8 @@ rcon_ip = 127.0.0.1
 rcon_port = 25575 
 rcon_pw = password
 ```
-"worlds" should contain a list of all [world:<xyz>] entries you have on that server and for which you want to add markers.  
+"worlds" is optional and should contain a list of all [world:<xyz>] entries you have on that server and for which you want to add markers.   
+If you leave it empty markers are added to all worlds.  
 You can have multiple playermarker sections for different servers.
 * python dependencies
 ```
