@@ -9,6 +9,7 @@ import requests
 import time
 from shutil import copyfile
 from PIL import Image, ImageOps
+from PIL.PngImagePlugin import PngInfo
 from io import BytesIO
 
 
@@ -141,6 +142,11 @@ def load_skin(uuid, conf):
             data = data["properties"][0]["value"]
             data = json5.loads(base64.b64decode(data))
             if "SKIN" in data["textures"]:
+                # do not download and create the icon again if the skin stayed the same
+                if os.path.isfile(file):
+                    old_img = Image.open(file)
+                    if old_img.info.get("SKIN", "") == data["textures"]["SKIN"]["url"]:
+                        return None
                 ri = requests.get(data["textures"]["SKIN"]["url"])
                 if ri.status_code == requests.codes.ok:
                     img = Image.open(BytesIO(ri.content))
@@ -199,8 +205,9 @@ def load_skin(uuid, conf):
                         skin.paste(armr, (0, 8, 4, 20))
                         skin.paste(legl, (8, 20, 12, 32))
                         skin.paste(arml, (12, 8, 16, 20))
-
-                    skin.save(file)
+                    metadata = PngInfo()
+                    metadata.add_text("SKIN", data["textures"]["SKIN"]["url"])
+                    skin.save(file, pnginfo=metadata)
                     return None
         if os.path.isfile(file):
             return None
