@@ -108,6 +108,7 @@ def update_markers(file, players, maps):
             "id": "uuid_" + player,
             "name": players[player][0],
             "icon": player + ".png",
+            "iconSize": [16, 32],
             "showDefault": True,
             "markers": {},
         }
