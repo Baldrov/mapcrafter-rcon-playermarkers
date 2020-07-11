@@ -34,7 +34,7 @@ rcon_port = 25575
 rcon_pw = password
 ```
 "worlds" is optional and should contain a list of all [world:<xyz>] entries you have on that server and for which you want to add markers.   
-If you leave it empty markers are added to all worlds.  
+If you omit it markers are added to all worlds.  
 You can have multiple playermarker sections for different servers.
 * python dependencies
 ```
