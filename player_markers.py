@@ -89,13 +89,14 @@ def update_markers(file, players, maps):
     with open(file) as f:
         data = re.findall(r'MAPCRAFTER_PLAYERMARKERS = \[(.*)\];', f.read(), re.DOTALL)[0]
         data = json5.loads('{ "groups" : [' + data + '] }')
-    for group in data["groups"]:
+    for group in data["groups"][:]:
         if "uuid" in group["id"]:
             uuid = group["id"].split("_")[1]
             if uuid in players:
                 group["showDefault"] = True
                 player = players.pop(uuid)
                 group["name"] = player[0]
+                group["updated"] = time.time()
                 for entry in group["markers"]:
                     group["markers"][entry] = []
                 for map in maps:
@@ -104,6 +105,9 @@ def update_markers(file, players, maps):
 
             else:
                 group["showDefault"] = False
+                # Remove Players that have been inactive more than 2 weeks
+                if time.time() - group.get("updated", 0) >= 1209600:
+                    data["groups"].remove(group)
     for player in players:
         group = {
             "id": "uuid_" + player,
@@ -111,6 +115,7 @@ def update_markers(file, players, maps):
             "icon": player + ".png",
             "iconSize": [16, 32],
             "showDefault": True,
+            "updated": time.time(),
             "markers": {},
         }
         for map in maps:
@@ -121,7 +126,7 @@ def update_markers(file, players, maps):
         data["groups"].append(group)
     with open(file, "w") as f:
         f.write("MAPCRAFTER_PLAYERMARKERS = ")
-        f.write(json5.dumps(data["groups"], quote_keys=True))
+        f.write(json5.dumps(data["groups"], quote_keys=True, indent=4))
         f.write(";")
 
 
